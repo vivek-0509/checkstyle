@@ -32,7 +32,7 @@ import com.puppycrawl.tools.checkstyle.api.AuditListener;
  * Generates <b>suppressions.xml</b> file, based on violations occurred.
  * See issue <a href="https://github.com/checkstyle/checkstyle/issues/102">#102</a>
  */
-public class XpathFileGeneratorAuditListener
+public final class XpathFileGeneratorAuditListener
         extends AbstractAutomaticBean
         implements AuditListener {
 
@@ -51,21 +51,33 @@ public class XpathFileGeneratorAuditListener
     private boolean isXmlHeaderPrinted;
 
     /**
-     * Creates a new {@code SuppressionFileGenerator} instance.
+     * Private constructor that initializes the instance.
+     *
+     * @param out the output stream
+     * @param outputStreamOptions if {@code CLOSE} stream should be closed in auditFinished()
+     */
+    private XpathFileGeneratorAuditListener(OutputStream out,
+                                           OutputStreamOptions outputStreamOptions) {
+
+        writer = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
+        closeStream = outputStreamOptions == OutputStreamOptions.CLOSE;
+    }
+
+    /**
+     * Creates a new {@code XpathFileGeneratorAuditListener} instance.
      * Sets the output to a defined stream.
      *
      * @param out the output stream
      * @param outputStreamOptions if {@code CLOSE} stream should be closed in auditFinished()
+     * @return a new {@code XpathFileGeneratorAuditListener} instance
      * @throws IllegalArgumentException if outputStreamOptions is null
      */
-    public XpathFileGeneratorAuditListener(OutputStream out,
-                                           OutputStreamOptions outputStreamOptions) {
+    public static XpathFileGeneratorAuditListener create(OutputStream out,
+                                                         OutputStreamOptions outputStreamOptions) {
         if (outputStreamOptions == null) {
             throw new IllegalArgumentException("Parameter outputStreamOptions can not be null");
         }
-
-        writer = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
-        closeStream = outputStreamOptions == OutputStreamOptions.CLOSE;
+        return new XpathFileGeneratorAuditListener(out, outputStreamOptions);
     }
 
     @Override

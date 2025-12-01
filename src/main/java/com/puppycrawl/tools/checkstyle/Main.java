@@ -409,11 +409,12 @@ public final class Main {
                     ((DefaultConfiguration) treeWalkerConfig).addChild(moduleConfig);
                 }
 
-                listener = new XpathFileGeneratorAuditListener(getOutputStream(options.outputPath),
+                listener = XpathFileGeneratorAuditListener.create(
+                        getOutputStream(options.outputPath),
                         getOutputStreamOptions(options.outputPath));
             }
             else if (options.generateCheckAndFileSuppressionsFile) {
-                listener = new ChecksAndFilesSuppressionFileGeneratorAuditListener(
+                listener = ChecksAndFilesSuppressionFileGeneratorAuditListener.create(
                         getOutputStream(options.outputPath),
                         getOutputStreamOptions(options.outputPath));
             }

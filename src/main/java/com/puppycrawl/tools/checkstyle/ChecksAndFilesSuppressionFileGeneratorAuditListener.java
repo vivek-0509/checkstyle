@@ -36,7 +36,7 @@ import com.puppycrawl.tools.checkstyle.api.AuditListener;
  * Generates <b>suppressions.xml</b> file, based on violations occurred.
  * See issue <a href="https://github.com/checkstyle/checkstyle/issues/5983">#5983</a>
  */
-public class ChecksAndFilesSuppressionFileGeneratorAuditListener
+public final class ChecksAndFilesSuppressionFileGeneratorAuditListener
         extends AbstractAutomaticBean
         implements AuditListener {
 
@@ -65,21 +65,33 @@ public class ChecksAndFilesSuppressionFileGeneratorAuditListener
     private boolean isXmlHeaderPrinted;
 
     /**
+     * Private constructor that initializes the instance.
+     *
+     * @param out the output stream
+     * @param outputStreamOptions if {@code CLOSE} stream should be closed in auditFinished()
+     */
+    private ChecksAndFilesSuppressionFileGeneratorAuditListener(OutputStream out,
+                                           OutputStreamOptions outputStreamOptions) {
+
+        writer = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
+        closeStream = outputStreamOptions == OutputStreamOptions.CLOSE;
+    }
+
+    /**
      * Creates a new {@code ChecksAndFilesSuppressionFileGeneratorAuditListener} instance.
      * Sets the output to a defined stream.
      *
      * @param out the output stream
      * @param outputStreamOptions if {@code CLOSE} stream should be closed in auditFinished()
-     * @throws IllegalArgumentException if outputStreamOptions is null.
+     * @return a new {@code ChecksAndFilesSuppressionFileGeneratorAuditListener} instance
+     * @throws IllegalArgumentException if outputStreamOptions is null
      */
-    public ChecksAndFilesSuppressionFileGeneratorAuditListener(OutputStream out,
-                                           OutputStreamOptions outputStreamOptions) {
+    public static ChecksAndFilesSuppressionFileGeneratorAuditListener create(OutputStream out,
+                                                       OutputStreamOptions outputStreamOptions) {
         if (outputStreamOptions == null) {
             throw new IllegalArgumentException("Parameter outputStreamOptions can not be null");
         }
-
-        writer = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
-        closeStream = outputStreamOptions == OutputStreamOptions.CLOSE;
+        return new ChecksAndFilesSuppressionFileGeneratorAuditListener(out, outputStreamOptions);
     }
 
     @Override

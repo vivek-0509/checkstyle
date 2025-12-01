@@ -79,7 +79,7 @@ public class ChecksAndFilesSuppressionFileGeneratorAuditListenerTest {
     public void testFileStarted() {
         final OutputStream out = new ByteArrayOutputStream();
         final ChecksAndFilesSuppressionFileGeneratorAuditListener listener =
-                new ChecksAndFilesSuppressionFileGeneratorAuditListener(
+                ChecksAndFilesSuppressionFileGeneratorAuditListener.create(
                         out, OutputStreamOptions.CLOSE);
         final AuditEvent ev = new AuditEvent(this, "Test.java", null);
         listener.fileStarted(ev);
@@ -97,7 +97,7 @@ public class ChecksAndFilesSuppressionFileGeneratorAuditListenerTest {
     public void testFileFinished() {
         final OutputStream out = new ByteArrayOutputStream();
         final ChecksAndFilesSuppressionFileGeneratorAuditListener listener =
-                new ChecksAndFilesSuppressionFileGeneratorAuditListener(out,
+                ChecksAndFilesSuppressionFileGeneratorAuditListener.create(out,
                         OutputStreamOptions.CLOSE);
         final AuditEvent ev = new AuditEvent(this, "Test.java", null);
         listener.fileFinished(ev);
@@ -118,7 +118,7 @@ public class ChecksAndFilesSuppressionFileGeneratorAuditListenerTest {
     public void testAddException() {
         final OutputStream out = new ByteArrayOutputStream();
         final ChecksAndFilesSuppressionFileGeneratorAuditListener logger =
-                new ChecksAndFilesSuppressionFileGeneratorAuditListener(out,
+                ChecksAndFilesSuppressionFileGeneratorAuditListener.create(out,
                         OutputStreamOptions.CLOSE);
         logger.auditStarted(null);
         final Violation violation =
@@ -144,7 +144,7 @@ public class ChecksAndFilesSuppressionFileGeneratorAuditListenerTest {
     @Test
     public void testCloseStream() {
         final ChecksAndFilesSuppressionFileGeneratorAuditListener listener =
-                new ChecksAndFilesSuppressionFileGeneratorAuditListener(outStream,
+                ChecksAndFilesSuppressionFileGeneratorAuditListener.create(outStream,
                 OutputStreamOptions.CLOSE);
         listener.finishLocalSetup();
         listener.auditStarted(null);
@@ -161,7 +161,7 @@ public class ChecksAndFilesSuppressionFileGeneratorAuditListenerTest {
     @Test
     public void testNoCloseStream() {
         final ChecksAndFilesSuppressionFileGeneratorAuditListener listener =
-                new ChecksAndFilesSuppressionFileGeneratorAuditListener(outStream,
+                ChecksAndFilesSuppressionFileGeneratorAuditListener.create(outStream,
                         OutputStreamOptions.NONE);
         listener.finishLocalSetup();
         listener.auditStarted(null);
@@ -240,7 +240,7 @@ public class ChecksAndFilesSuppressionFileGeneratorAuditListenerTest {
     public void testFinishLocalSetup() {
         final OutputStream out = new ByteArrayOutputStream();
         final ChecksAndFilesSuppressionFileGeneratorAuditListener listener =
-                new ChecksAndFilesSuppressionFileGeneratorAuditListener(out,
+                ChecksAndFilesSuppressionFileGeneratorAuditListener.create(out,
                         OutputStreamOptions.CLOSE);
 
         listener.finishLocalSetup();
@@ -257,8 +257,8 @@ public class ChecksAndFilesSuppressionFileGeneratorAuditListenerTest {
         final OutputStream out = new ByteArrayOutputStream();
         try {
             final ChecksAndFilesSuppressionFileGeneratorAuditListener listener =
-                    new ChecksAndFilesSuppressionFileGeneratorAuditListener(out,
-                            null);
+                    ChecksAndFilesSuppressionFileGeneratorAuditListener.create(out,
+                            (OutputStreamOptions) null);
             // assert required to calm down eclipse's 'The allocated object is never used' violation
             assertWithMessage("Null instance")
                     .that(listener)
@@ -295,7 +295,7 @@ public class ChecksAndFilesSuppressionFileGeneratorAuditListenerTest {
 
     private void verifyOutput(String expected, AuditEvent... events) {
         final ChecksAndFilesSuppressionFileGeneratorAuditListener listener =
-            new ChecksAndFilesSuppressionFileGeneratorAuditListener(outStream,
+            ChecksAndFilesSuppressionFileGeneratorAuditListener.create(outStream,
                 OutputStreamOptions.CLOSE);
 
         for (AuditEvent event : events) {

@@ -96,7 +96,7 @@ public class XpathFileGeneratorAuditListenerTest {
     public void testFinishLocalSetup() {
         final OutputStream out = new ByteArrayOutputStream();
         final XpathFileGeneratorAuditListener listener =
-                new XpathFileGeneratorAuditListener(out, OutputStreamOptions.CLOSE);
+                XpathFileGeneratorAuditListener.create(out, OutputStreamOptions.CLOSE);
 
         listener.finishLocalSetup();
         listener.auditStarted(null);
@@ -111,7 +111,7 @@ public class XpathFileGeneratorAuditListenerTest {
     public void testFileStarted() {
         final OutputStream out = new ByteArrayOutputStream();
         final XpathFileGeneratorAuditListener listener =
-                new XpathFileGeneratorAuditListener(out, OutputStreamOptions.CLOSE);
+                XpathFileGeneratorAuditListener.create(out, OutputStreamOptions.CLOSE);
         final AuditEvent ev = new AuditEvent(this, "Test.java", null);
         listener.fileStarted(ev);
         listener.auditFinished(null);
@@ -125,7 +125,7 @@ public class XpathFileGeneratorAuditListenerTest {
     public void testFileFinished() {
         final OutputStream out = new ByteArrayOutputStream();
         final XpathFileGeneratorAuditListener listener =
-                new XpathFileGeneratorAuditListener(out, OutputStreamOptions.CLOSE);
+                XpathFileGeneratorAuditListener.create(out, OutputStreamOptions.CLOSE);
         final AuditEvent ev = new AuditEvent(this, "Test.java", null);
         listener.fileFinished(ev);
         listener.auditFinished(null);
@@ -139,7 +139,7 @@ public class XpathFileGeneratorAuditListenerTest {
     public void testAddException() {
         final OutputStream out = new ByteArrayOutputStream();
         final XpathFileGeneratorAuditListener logger =
-                new XpathFileGeneratorAuditListener(out, OutputStreamOptions.CLOSE);
+                XpathFileGeneratorAuditListener.create(out, OutputStreamOptions.CLOSE);
         logger.auditStarted(null);
         final Violation violation =
                 new Violation(1, 1,
@@ -246,7 +246,7 @@ public class XpathFileGeneratorAuditListenerTest {
     @Test
     public void testCloseStream() {
         final XpathFileGeneratorAuditListener listener =
-                new XpathFileGeneratorAuditListener(outStream, OutputStreamOptions.CLOSE);
+                XpathFileGeneratorAuditListener.create(outStream, OutputStreamOptions.CLOSE);
         listener.finishLocalSetup();
         listener.auditStarted(null);
         listener.auditFinished(null);
@@ -259,7 +259,7 @@ public class XpathFileGeneratorAuditListenerTest {
     @Test
     public void testNoCloseStream() {
         final XpathFileGeneratorAuditListener listener =
-                new XpathFileGeneratorAuditListener(outStream, OutputStreamOptions.NONE);
+                XpathFileGeneratorAuditListener.create(outStream, OutputStreamOptions.NONE);
         listener.finishLocalSetup();
         listener.auditStarted(null);
         listener.auditFinished(null);
@@ -273,8 +273,8 @@ public class XpathFileGeneratorAuditListenerTest {
     public void testNullOutputStreamOptions() {
         final OutputStream out = new ByteArrayOutputStream();
         try {
-            final XpathFileGeneratorAuditListener listener = new XpathFileGeneratorAuditListener(
-                    out, null);
+            final XpathFileGeneratorAuditListener listener = XpathFileGeneratorAuditListener.create(
+                    out, (OutputStreamOptions) null);
             // assert required to calm down eclipse's 'The allocated object is never used' violation
             assertWithMessage("Null instance")
                     .that(listener)
@@ -335,7 +335,7 @@ public class XpathFileGeneratorAuditListenerTest {
         final TestByteArrayOutputStream out = new TestByteArrayOutputStream();
 
         final XpathFileGeneratorAuditListener listener =
-                new XpathFileGeneratorAuditListener(out, OutputStreamOptions.CLOSE);
+                XpathFileGeneratorAuditListener.create(out, OutputStreamOptions.CLOSE);
 
         for (AuditEvent event : events) {
             listener.addError(event);
