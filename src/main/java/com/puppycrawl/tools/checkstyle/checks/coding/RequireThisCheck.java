@@ -192,6 +192,7 @@ public class RequireThisCheck extends AbstractCheck {
             TokenTypes.COMPACT_CTOR_DEF,
             TokenTypes.LITERAL_TRY,
             TokenTypes.RESOURCE,
+            TokenTypes.COMPACT_COMPILATION_UNIT,
         };
     }
 
@@ -225,7 +226,8 @@ public class RequireThisCheck extends AbstractCheck {
             case TokenTypes.IDENT -> processIdent(ast);
             case TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF, TokenTypes.ENUM_DEF,
                  TokenTypes.ANNOTATION_DEF, TokenTypes.SLIST, TokenTypes.METHOD_DEF,
-                 TokenTypes.CTOR_DEF, TokenTypes.LITERAL_FOR, TokenTypes.RECORD_DEF ->
+                 TokenTypes.CTOR_DEF, TokenTypes.LITERAL_FOR, TokenTypes.RECORD_DEF,
+                 TokenTypes.COMPACT_COMPILATION_UNIT ->
                 current.push(frames.get(ast));
             case TokenTypes.LITERAL_TRY -> {
                 if (ast.getFirstChild().getType() == TokenTypes.RESOURCE_SPECIFICATION) {
@@ -244,7 +246,7 @@ public class RequireThisCheck extends AbstractCheck {
             case TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF, TokenTypes.ENUM_DEF,
                  TokenTypes.ANNOTATION_DEF, TokenTypes.SLIST, TokenTypes.METHOD_DEF,
                  TokenTypes.CTOR_DEF, TokenTypes.LITERAL_FOR,
-                 TokenTypes.RECORD_DEF -> current.pop();
+                 TokenTypes.RECORD_DEF, TokenTypes.COMPACT_COMPILATION_UNIT -> current.pop();
             case TokenTypes.LITERAL_TRY -> {
                 if (current.peek().getType() == FrameType.TRY_WITH_RESOURCES_FRAME) {
                     current.pop();
@@ -441,6 +443,9 @@ public class RequireThisCheck extends AbstractCheck {
                 frameStack.addFirst(new ClassFrame(frame, classFrameNameIdent));
             }
 
+            case TokenTypes.COMPACT_COMPILATION_UNIT ->
+                frameStack.addFirst(new ClassFrame(frame, ast));
+
             case TokenTypes.SLIST -> frameStack.addFirst(new BlockFrame(frame, ast));
 
             case TokenTypes.METHOD_DEF -> collectMethodDeclarations(frameStack, ast, frame);
@@ -540,7 +545,8 @@ public class RequireThisCheck extends AbstractCheck {
             case TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF, TokenTypes.ENUM_DEF,
                  TokenTypes.ANNOTATION_DEF, TokenTypes.SLIST, TokenTypes.METHOD_DEF,
                  TokenTypes.CTOR_DEF, TokenTypes.LITERAL_CATCH, TokenTypes.LITERAL_FOR,
-                 TokenTypes.RECORD_DEF, TokenTypes.COMPACT_CTOR_DEF ->
+                 TokenTypes.RECORD_DEF, TokenTypes.COMPACT_CTOR_DEF,
+                 TokenTypes.COMPACT_COMPILATION_UNIT ->
                 frames.put(ast, frameStack.poll());
 
             case TokenTypes.LITERAL_NEW -> {
